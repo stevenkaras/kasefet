@@ -10,11 +10,11 @@ root
       |--20160223.140554.phone
 ```
 
-Device names can either be configured locally, or set via stable digest from the uname, or just use the hostname (may cause issues in VM images).
+Device names can either be configured locally, or set via stable digest from the uname, or just use the hostname (may cause issues in VM images). The accuracy of the name can be configured (pid, tid), but should be stable throughout the lifetime of a system.
 
-To select the value for a given key, just look for the last file in the directory (lexicographically). If the format YYYYMMDD-HHMMSS.device.extension is followed, then there should only be conflicts if two devices edited the value at the exact same time. In such a case, the device name itself is used as a tie breaker. If desired, milliseconds may be used as well.
+To select the value for a given key, just look for the last file in the directory (lexicographically). If the format YYYYMMDD-HHMMSS.device.extension is followed, then there should only be conflicts if two devices edited the value at the exact same time. In such a case, the device name itself is used as a tie breaker. Additional precision may be used, but should not change throughout the lifetime of a system.
 
-This is stable enough for most purposes (and well within my use cases, assuming clock drift doesn't go over a few minutes).
+This is stable enough for most purposes (and well within my use cases, assuming clock drift is below change velocity).
 
 I leave it as an exercise to the sync program to correctly identify deleted values, although keeping the history of a value is typically preferred. Please note that editing a file directly should NEVER happen. Once a file is written, it should never change (This can be enforced with a digest of the content in the filename).
 
