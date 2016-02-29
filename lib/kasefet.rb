@@ -1,5 +1,5 @@
 require "kasefet/version"
 
-module Kasefet
+class Kasefet
   # Your code goes here...
 end
