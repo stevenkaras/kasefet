@@ -2,6 +2,8 @@
 
 Kasefet is a password wallet built around flat files.
 
+NOTE: This version of kasefet is not meant to be highly secure. It is a reference implementation
+
 ## Current Status
 
 Kasefet is currently a work in progress. This is the todo list for version 1.0, and is based entirely on my own requirements:
