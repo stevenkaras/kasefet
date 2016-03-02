@@ -6,7 +6,7 @@ require 'fileutils'
 class EncryptedFlatKVTest < Minitest::Test
   def setup
     @tmpdir = Dir.mktmpdir
-    @cipher = OpenSSL::Cipher.new("aes-256-cbc")
+    @cipher = OpenSSL::Cipher.new("aes-256-gcm")
     @cipher_key = @cipher.random_key
     @cipher_iv = @cipher.random_iv
     @flatkv = Kasefet::EncryptedFlatKV.new(root: @tmpdir, cipher_key: @cipher_key, cipher_iv: @cipher_iv, cipher: @cipher)
@@ -36,5 +36,15 @@ class EncryptedFlatKVTest < Minitest::Test
     @flatkv["foobar"] = "hello, world"
     value_file = @flatkv.file_for_key("foobar")
     refute_equal File.binread(value_file), @flatkv["foobar"]
+  end
+
+  def test_supports_unauthenticated_encryption_modes
+    @cipher = OpenSSL::Cipher.new("aes-256-cbc")
+    @flatkv.cipher = @cipher
+    @flatkv.cipher_key = @cipher.random_key
+    @flatkv.cipher_iv = @cipher.random_iv
+    @flatkv["foobar"] = "hello, world"
+    stored_value = @flatkv["foobar"]
+    assert_equal "hello, world", stored_value
   end
 end
