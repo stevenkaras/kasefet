@@ -1,11 +1,11 @@
 # Key-value flat file system
 
-We reuse this concept in several places, so here's the generic concept. I need to design a system of files that will survive a naive synchronization program like rsync, syncthing, or dropbox. The basic idea is to namespace everything by hexdigest (inspired by git). We need to go a step further, and allow multiple values to not overwrite each other. The way to do this is to mark each value with the timestamp it was created and the source of the value. For example, this means the key `kasefet_name_salt` would have values stored in the directory `37/e5dd3e5cec596227e8a768eb2dac1912769fa2c8a1547ce391143c78ebc1c4`, like this:
+We reuse this concept in several places, so here's the generic concept. I need to design a system of files that will survive a naive synchronization program like rsync, syncthing, or dropbox. The basic idea is to namespace everything by hexdigest (inspired by git). We need to go a step further, and allow multiple values to not overwrite each other. The way to do this is to mark each value with the timestamp it was created and the source of the value. For example, this means the key `kasefet.name_salt` would have values stored in the directory `db/c39d7d6b239c2e20a31672ed979fed2b45c88748d06ba3be6bff85767b5d3d`, like this:
 
 ```
 root
-|--37
-   |--e5dd3e5cec596227e8a768eb2dac1912769fa2c8a1547ce391143c78ebc1c4
+|--db
+   |--c39d7d6b239c2e20a31672ed979fed2b45c88748d06ba3be6bff85767b5d3d
       |--20160224.184012.laptop
       |--20160223.140554.phone
 ```
@@ -41,11 +41,13 @@ Note that it is left as an exercise to the user how to rotate the primary creden
 
 ## index directory
 
-The index directory holds a single file, which is the index of logical key names to physical key names. If more than one file is in this directory, it's a strong hint that the index needs to be rebuilt.
+The index directory holds a single file, which is the index of logical key names to physical key names. If more than one file is in this directory, it's a strong hint that the index needs to be rebuilt (sync programs that stick extra files everywhere are a plague on mankind)
 
 ## metadata directory
 
-The metadata file contains wallet-level settings (optionally with an extension if not a simple key=value format file). Should be encrypted. The standard way to test if a password is correct is to attempt to decrypt and parse this file, looking for the kasefet.wallet_version key.
+The metadata file contains wallet-level settings (optionally with an extension if not a simple key=value format file).
+
+ Should be encrypted. The standard way to test if a password is correct is to attempt to decrypt and parse this file, looking for the kasefet.wallet_version key.
 
 Required keys are:
 

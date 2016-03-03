@@ -35,4 +35,9 @@ class FlatKVTest < Minitest::Test
     assert_equal 3, value_files.size
     assert_equal "jon jacob jingleheimer", @flatkv["myname"]
   end
+
+  def test_read_empty_values
+    value = @flatkv["foobar"]
+    assert_nil value
+  end
 end
