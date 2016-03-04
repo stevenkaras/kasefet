@@ -32,7 +32,12 @@ class Kasefet
         content.split("\n").each do |line|
           key, value = line.split("=")
           value = value.to_i if value =~ /\d+/
-          self[key] = value
+          if self[key]
+            self[key] = [self[key]] unless self[key].is_a? Array
+            self[key] << value
+          else
+            self[key] = value
+          end
         end
       end
     end
@@ -47,7 +52,13 @@ class Kasefet
         File.write(@file, @settings.to_yaml)
       else
         to_write = flatten_hash(@settings).map do |key, value|
-          "#{key}=#{value}"
+          if value.is_a? Array
+            value.map do |array_value|
+              "#{key}=#{array_value}"
+            end.join("\n")
+          else
+            "#{key}=#{value}"
+          end
         end.join("\n")
         File.write(@file, to_write)
       end

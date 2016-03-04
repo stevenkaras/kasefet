@@ -39,11 +39,13 @@ class ConfigTest < Minitest::Test
   def do_roundtrip_test
     @config["foo"] = 1
     @config["bar.baz"] = 2
+    @config["array"] = [1, 2]
     @config.save
 
     other_config = Kasefet::Config.new(@config.file)
     assert_equal @config["foo"], other_config["foo"]
     assert_equal @config["bar.baz"], other_config["bar.baz"]
+    assert_equal @config["array"], other_config["array"]
   end
 
   def test_flatten_hash
