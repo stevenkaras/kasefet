@@ -25,6 +25,8 @@ class Kasefet
       @credentials = Kasefet::FlatKV.new(root: @root + CREDENTIALS_DIR)
     end
 
+    attr_accessor :root
+
     def salted_keyname(name)
       return "#{@name_salt}/#{name}/#{@name_salt}"
     end
