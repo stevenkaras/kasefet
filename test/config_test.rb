@@ -1,7 +1,7 @@
 require File.expand_path("test_helper", __dir__)
 
-require 'kasefet/config'
-require 'fileutils'
+require "kasefet/config"
+require "fileutils"
 
 class ConfigTest < Minitest::Test
   def setup

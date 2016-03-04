@@ -1,7 +1,7 @@
 require File.expand_path("test_helper", __dir__)
 
-require 'kasefet/encrypted_flat_kv'
-require 'fileutils'
+require "kasefet/encrypted_flat_kv"
+require "fileutils"
 
 class EncryptedFlatKVTest < Minitest::Test
   def setup

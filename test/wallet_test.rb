@@ -1,7 +1,7 @@
 require File.expand_path("test_helper", __dir__)
 
-require 'kasefet/wallet'
-require 'fileutils'
+require "kasefet/wallet"
+require "fileutils"
 
 class WalletTest < Minitest::Test
   def setup
