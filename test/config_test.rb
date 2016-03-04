@@ -13,6 +13,28 @@ class ConfigTest < Minitest::Test
     FileUtils.remove_entry(@tmpdir)
   end
 
+  def test_elegant_default
+    value = @config["something"] = 1
+    assert_equal value, @config["something"]
+    assert_equal 1, value
+
+    @config["foo"] ||= 2
+    assert_equal 2, @config["foo"]
+
+    @config["foo"] ||= 3
+    assert_equal 2, @config["foo"]
+
+    @config["deeply.nested.value"] = 4
+    assert_equal 4, @config["deeply.nested.value"]
+    @config["deeply.nested.value"] ||= 5
+    assert_equal 4, @config["deeply.nested.value"]
+
+    @config["deeply.nested.othervalue"] ||= 6
+    assert_equal 6, @config["deeply.nested.othervalue"]
+    @config["deeply.nested.othervalue"] ||= 7
+    assert_equal 6, @config["deeply.nested.othervalue"]
+  end
+
   def test_roundtrip
     @config["foo"] = 1
     assert_equal 1, @config["foo"]
