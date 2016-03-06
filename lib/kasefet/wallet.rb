@@ -37,11 +37,11 @@ class Kasefet
       return "#{@name_salt}/#{name}/#{@name_salt}"
     end
 
-    def read_credentials(name)
+    def load(name)
       return @credentials[salted_keyname(name)]
     end
 
-    def store_credentials(name, creds)
+    def store(name, creds)
       @credentials[salted_keyname(name)] = creds
     end
   end

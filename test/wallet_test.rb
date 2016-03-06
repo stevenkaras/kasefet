@@ -15,21 +15,21 @@ class WalletTest < Minitest::Test
   end
 
   def test_storage_roundtrip
-    @wallet.store_credentials("foobar", "sekrit")
-    creds = @wallet.read_credentials("foobar")
+    @wallet.store("foobar", "sekrit")
+    creds = @wallet.load("foobar")
     assert_equal "sekrit", creds
   end
 
   def test_reads_existing_wallet
-    @wallet.store_credentials("foobar", "sekrit")
+    @wallet.store("foobar", "sekrit")
 
     @wallet = Kasefet::Wallet.new(directory: @tmpdir)
-    creds = @wallet.read_credentials("foobar")
+    creds = @wallet.load("foobar")
     assert_equal "sekrit", creds
   end
 
   def test_salts_keynames
-    @wallet.store_credentials("foobar", "sekrit")
+    @wallet.store("foobar", "sekrit")
 
     unsalted_path = Kasefet::FlatKV.new(root: @tmpdir + "ksft").dir_for_key("foobar")
     refute File.directory?(unsalted_path)
@@ -37,12 +37,12 @@ class WalletTest < Minitest::Test
 
   def test_password_roundtrip
     @wallet = Kasefet::Wallet.new(directory: @tmpdir, passphrase: "foobarbaz")
-    @wallet.store_credentials("foobar", "sekrit")
-    creds = @wallet.read_credentials("foobar")
+    @wallet.store("foobar", "sekrit")
+    creds = @wallet.load("foobar")
     assert_equal "sekrit", creds
 
     @wallet = Kasefet::Wallet.new(directory: @tmpdir, passphrase: "foobarbaz")
-    after_reload = @wallet.read_credentials("foobar")
+    after_reload = @wallet.load("foobar")
     assert_equal "sekrit", after_reload
   end
 

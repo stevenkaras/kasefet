@@ -1,6 +1,7 @@
 require "thunder"
 
 require "kasefet/config"
+require "kasefet/wallet"
 
 class Kasefet
   class CLI
@@ -33,7 +34,7 @@ class Kasefet
 
       content = content.join(" ")
 
-      @wallet.store_credentials(keyname, content)
+      @wallet.store(keyname, content)
 
       return content
     end
@@ -43,7 +44,7 @@ class Kasefet
       load_config(options)
       load_wallet
 
-      content = @wallet.read_credentials(keyname)
+      content = @wallet.load(keyname)
 
       puts content
       return content

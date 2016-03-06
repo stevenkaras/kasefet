@@ -9,7 +9,9 @@ NOTE: This version of kasefet is not meant to be highly secure. It is a referenc
 Kasefet is currently a work in progress. This is the todo list for version 1.0, and is based entirely on my own requirements:
 
  - [x] Flat file wallet
- - [ ] SSL encrypted wallet
+ - [x] SSL encrypted wallet
+ - [ ] support for multiple wallets
+ - [ ] editor integration
  - [ ] clipboard integration (Mac)
  - [ ] autotype (Mac)
  - [ ] clipboard integration (Ubuntu)
