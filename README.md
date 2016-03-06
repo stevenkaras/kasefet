@@ -11,7 +11,7 @@ Kasefet is currently a work in progress. This is the todo list for version 1.0, 
  - [x] Flat file wallet
  - [x] SSL encrypted wallet
  - [ ] support for multiple wallets
- - [ ] editor integration
+ - [x] editor integration
  - [ ] clipboard integration (Mac)
  - [ ] autotype (Mac)
  - [ ] clipboard integration (Ubuntu)
