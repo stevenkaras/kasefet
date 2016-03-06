@@ -8,8 +8,7 @@ class EncryptedFlatKVTest < Minitest::Test
     @tmpdir = Dir.mktmpdir
     @cipher = OpenSSL::Cipher.new("aes-256-gcm")
     @cipher_key = @cipher.random_key
-    @cipher_iv = @cipher.random_iv
-    @flatkv = Kasefet::EncryptedFlatKV.new(root: @tmpdir, cipher_key: @cipher_key, cipher_iv: @cipher_iv, cipher: @cipher)
+    @flatkv = Kasefet::EncryptedFlatKV.new(root: @tmpdir, cipher_key: @cipher_key)
   end
 
   def teardown
@@ -38,13 +37,10 @@ class EncryptedFlatKVTest < Minitest::Test
     refute_equal File.binread(value_file), @flatkv["foobar"]
   end
 
-  def test_supports_unauthenticated_encryption_modes
-    @cipher = OpenSSL::Cipher.new("aes-256-cbc")
-    @flatkv.cipher = @cipher
-    @flatkv.cipher_key = @cipher.random_key
-    @flatkv.cipher_iv = @cipher.random_iv
+  def test_rotates_keys_properly
     @flatkv["foobar"] = "hello, world"
-    stored_value = @flatkv["foobar"]
-    assert_equal "hello, world", stored_value
+    new_key = @cipher.random_key
+    @flatkv.reencrypt_all_values!(new_key)
+    assert_equal "hello, world", @flatkv["foobar"]
   end
 end

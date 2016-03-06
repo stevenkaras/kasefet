@@ -12,11 +12,15 @@ root
 
 Device names can either be configured locally, or set via stable digest from the uname, or just use the hostname (may cause issues in VM images). The accuracy of the name can be configured (pid, tid), but should be stable throughout the lifetime of a system.
 
-To select the value for a given key, just look for the last file in the directory (lexicographically). If the format YYYYMMDD-HHMMSS.device.extension is followed, then there should only be conflicts if two devices edited the value at the exact same time. In such a case, the device name itself is used as a tie breaker. Additional precision may be used, but should not change throughout the lifetime of a system.
+To select the value for a given key, just look for the last file in the directory (lexicographically). If the format YYYYMMDD-HHMMSS.device.extension is followed, then there should only be conflicts if two devices edited the value at the exact same time. In such a case, the device name itself is used as a tie breaker. Additional precision may be used, but the level of precision should not change throughout the lifetime of a system.
 
 This is stable enough for most purposes (and well within my use cases, assuming clock drift is below change velocity).
 
 I leave it as an exercise to the sync program to correctly identify deleted values, although keeping the history of a value is typically preferred. Please note that editing a file directly should NEVER happen. Once a file is written, it should never change (This can be enforced with a digest of the content in the filename).
+
+## Encryption
+
+When encrypting files in such a format, I like to keep them prefixed to the encrypted content and then the auth tag. Note that the first version only supports AES-256-GCM.
 
 # File format
 
@@ -33,11 +37,17 @@ wallet
 
 ## key file
 
-The key file contains the master encryption key for the wallet. This key is used to encrypt the flatfile kv values. Note that the key has two parts, the key and the iv (because we recommend operating in CBC mode).
+The key file contains the master encryption key for the wallet. This key is used to encrypt the flatfile kv values. When encrypted, the keyfile has this format:
 
-Optionally, for debugging, a plaintext wallet can be created, which wouldn't have this file.
+```
++------------------------------------------------------+
+| pbkdf2 salt (if any) | iv | auth_tag | encrypted key |
++------------------------------------------------------+
+```
 
-Note that it is left as an exercise to the user how to rotate the primary credentials. In practice, this will require forcing synchronization immediately following such a change.
+### Rotating credentials
+
+When rotating credentials, it is recommended to simply reencrypt the keyfile with a new passphrase, and ensure consensus.
 
 ## index directory
 
