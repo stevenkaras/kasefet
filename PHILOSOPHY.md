@@ -1,6 +1,6 @@
 # The name
 
-Kasefet is the hebrew word for "safe", (the locked box meaning of safe). Seemed as good as any, and wasn't taken on rubygems
+Kasefet is the Hebrew word for "safe", (the locked box meaning of safe). Seemed as good as any, and wasn't taken on RubyGems
 
 # A bit of history
 

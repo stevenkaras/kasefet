@@ -12,10 +12,10 @@ Kasefet is currently a work in progress. This is the todo list for version 1.0, 
  - [x] SSL encrypted wallet
  - [ ] support for multiple wallets
  - [x] editor integration
- - [ ] clipboard integration (Mac)
- - [ ] autotype (Mac)
- - [ ] clipboard integration (Ubuntu)
- - [ ] autotype (Ubuntu)
+ - [x] clipboard integration (Mac Yosemite 10.10)
+ - [ ] autotype (Mac Yosemite 10.10)
+ - [x] clipboard integration (Ubuntu 14.04)
+ - [ ] autotype (Ubuntu 14.04)
 
 ## Installation
 
