@@ -10,7 +10,7 @@ Kasefet is currently a work in progress. This is the todo list for version 1.0, 
 
  - [x] Flat file wallet
  - [x] SSL encrypted wallet
- - [ ] support for multiple wallets
+ - [x] support for multiple wallets
  - [x] editor integration
  - [x] clipboard integration (Mac Yosemite 10.10)
  - [ ] autotype (Mac Yosemite 10.10)

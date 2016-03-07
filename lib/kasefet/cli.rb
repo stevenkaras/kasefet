@@ -2,6 +2,7 @@ require "thunder"
 
 require "kasefet/config"
 require "kasefet/wallet"
+require "kasefet/multi_wallet"
 
 class Kasefet
   class CLI
@@ -17,24 +18,29 @@ class Kasefet
     desc "copy KEYNAME", "copy the contents of KEYNAME to the primary system clipboard"
     def copy(keyname, **options)
       load_config(options)
-      load_wallet
+      load_wallet(options)
 
       require 'clipboard'
 
-      Clipboard.copy(@wallet.load(keyname))
+      Clipboard.copy(@wallets.load(keyname))
     end
 
-    def load_config(options)
+    def load_config(options = {})
       config_file = options[:config]
       config_file ||= GlobalConfigLocations.find { |file| File.exist?(File.expand_path(file)) }
       config_file ||= File.expand_path(GlobalConfigLocations.first)
       @config = Kasefet::Config.new(config_file)
     end
 
-    def load_wallet
-      wallet_dir = @config["wallet"]
-      wallet_dir = @config["wallet"] = File.expand_path(DefaultWalletLocation) unless wallet_dir
-      @wallet = Kasefet::Wallet.new(directory: wallet_dir)
+    def load_wallet(options = {})
+      wallet_dirs = @config["wallet"]
+      wallet_dirs = @config["wallet"] = File.expand_path(DefaultWalletLocation) unless wallet_dirs
+      wallet_dirs = Array(wallet_dirs)
+      wallets = wallet_dirs.map do |wallet_dir|
+        [wallet_dir, Kasefet::Wallet.new(directory: wallet_dir)]
+      end.to_h
+
+      @wallets = Kasefet::MultiWallet.new(wallets)
     end
 
     def determine_editor
@@ -54,13 +60,13 @@ class Kasefet
     desc "edit KEYNAME", "open the contents of KEYNAME in an editor, and save the changes"
     def edit(keyname, *content, **options)
       load_config(options)
-      load_wallet
+      load_wallet(options)
 
       require 'tmpdir'
       require 'pathname'
       Dir.mktmpdir do |tmpdir|
         tmpdir = Pathname.new(tmpdir)
-        content = @wallet.load(keyname)
+        content = @wallets.load(keyname)
         File.binwrite(tmpdir + keyname, content)
 
         # invoke the editor
@@ -73,7 +79,7 @@ class Kasefet
           puts "`#{editor}` exited with error status: #{$?}. Not saving contents"
         else
           new_content = File.binread(tmpdir + keyname)
-          @wallet.store(keyname, new_content)
+          @wallets.store(keyname, new_content)
         end
       end
     end
@@ -81,11 +87,11 @@ class Kasefet
     desc "add KEYNAME CONTENTS...", "store the given CONTENTS in KEYNAME"
     def add(keyname, *content, **options)
       load_config(options)
-      load_wallet
+      load_wallet(options)
 
       content = content.join(" ")
 
-      @wallet.store(keyname, content)
+      @wallets.store(keyname, content)
 
       return content
     end
@@ -93,9 +99,9 @@ class Kasefet
     desc "show KEYNAME", "print the contents of KEYNAME to stdout"
     def show(keyname, **options)
       load_config(options)
-      load_wallet
+      load_wallet(options)
 
-      content = @wallet.load(keyname)
+      content = @wallets.load(keyname)
 
       puts content
       return content

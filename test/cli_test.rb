@@ -29,8 +29,8 @@ class CLITest < Minitest::Test
 
   def test_creates_wallet
     @cli.load_config(config: @config.file)
-    wallet = @cli.load_wallet
-    assert_equal wallet.root.to_s, @config["wallet"]
+    wallets = @cli.load_wallet
+    assert_equal wallets.wallets.values.first.root.to_s, @config["wallet"]
   end
 
   def test_stores_and_prints_a_password
