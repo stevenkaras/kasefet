@@ -4,6 +4,7 @@ require "kasefet/config"
 require "kasefet/cli"
 require "kasefet/wallet"
 require "fileutils"
+require 'clipboard'
 
 class CLITest < Minitest::Test
   def setup
@@ -12,10 +13,12 @@ class CLITest < Minitest::Test
     @config["wallet"] = @tmpdir + "wallet"
     @config.save
     @cli = Kasefet::CLI.new
+    Clipboard.clear
   end
 
   def teardown
     FileUtils.remove_entry(@tmpdir)
+    Clipboard.clear
   end
 
   def test_loads_config_from_option
@@ -38,5 +41,13 @@ class CLITest < Minitest::Test
       loaded_content = @cli.show("foo", config: @config.file)
       assert_equal "bar baz", loaded_content
     end
+  end
+
+  def test_copy_paste_keyboard
+    saved_content = @cli.add("foo", "bar", "baz", config: @config.file)
+    loaded_content = @cli.copy("foo", config: @config.file)
+    assert_equal saved_content, loaded_content
+    clipboard_content = Clipboard.paste
+    assert_equal saved_content, clipboard_content
   end
 end

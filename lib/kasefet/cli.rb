@@ -14,6 +14,16 @@ class Kasefet
 
     include Thunder
 
+    desc "copy KEYNAME", "copy the contents of KEYNAME to the primary system clipboard"
+    def copy(keyname, **options)
+      load_config(options)
+      load_wallet
+
+      require 'clipboard'
+
+      Clipboard.copy(@wallet.load(keyname))
+    end
+
     def load_config(options)
       config_file = options[:config]
       config_file ||= GlobalConfigLocations.find { |file| File.exist?(File.expand_path(file)) }

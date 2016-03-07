@@ -1,7 +1,9 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'kasefet/version'
+require "kasefet/version"
+
+require "rbconfig" # for platform data
 
 Gem::Specification.new do |spec|
   spec.name          = "kasefet"
@@ -19,8 +21,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "thunder", "~> 0.7"
+  spec.add_runtime_dependency "clipboard", "~> 1.0"
+
+  case RbConfig::CONFIG['host_os']
+  when /windows/
+    spec.add_runtime_dependency "ffi"
+  end
+
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "thunder", "~> 0.7"
   spec.add_development_dependency "minitest"
 end
