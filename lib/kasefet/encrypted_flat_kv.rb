@@ -51,14 +51,15 @@ class Kasefet
       return value
     end
 
-    def [](key)
-      encrypted_value = super(key)
-      return nil if encrypted_value.nil?
-      return decrypt_value(encrypted_value, @cipher_key)
+    def read_value_file(file_path)
+      encrypted_contents = super(file_path)
+      return nil if encrypted_contents.nil?
+      return decrypt_value(encrypted_contents, @cipher_key)
     end
 
-    def []=(key, value)
-      super(key, encrypt_value(value, @cipher_key))
+    def format_value(key, value)
+      value = super(key, value)
+      return encrypt_value(value, @cipher_key)
     end
   end
 end

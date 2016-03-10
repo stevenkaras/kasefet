@@ -22,7 +22,16 @@ I leave it as an exercise to the sync program to correctly identify deleted valu
 
 When encrypting files in such a format, I like to keep them prefixed to the encrypted content and then the auth tag. Note that the first version only supports AES-256-GCM.
 
-# File format
+## File format
+
+The actual format of the value files is a binary file with the magic number "KSFT". The layout is simple:
+
+```
+|Magic Number|Key Length (32 bit Big Endian unsigned integer)|Key|Value until EOF
+|KSFT|0x0006|foobar|bazquux....
+```
+
+# Kasefet Password Wallets
 
 A kasefet wallet has the following layout:
 
