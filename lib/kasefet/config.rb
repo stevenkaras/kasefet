@@ -3,8 +3,6 @@ class Kasefet
     def initialize(file)
       @file = file
       @settings = {}
-      return unless File.exists?(file)
-      load
     end
 
     attr_accessor :file
@@ -18,17 +16,30 @@ class Kasefet
       last_segment[key.split(".")[-1]] = value
     end
 
+    def each_keys()
+      return @settings.keys.each unless block_given?
+
+      @settings.keys.each do |key|
+        yield key
+      end
+    end
+
     def load
-      case File.extname(@file)
+      return unless File.exists?(@file)
+      parse(File.read(@file))
+    end
+
+    def parse(contents, file_path = @file)
+      case File.extname(file_path)
       when ".yaml", ".yml"
         require 'yaml'
-        @settings = YAML.load(File.read(file))
+        @settings = YAML.load(contents)
       when ".json"
         require 'json'
-        @settings = JSON.parse(File.read(file))
+        @settings = JSON.parse(contents)
       else
         # try the key=value format
-        content = File.read(file)
+        content = contents
         content.split("\n").each do |line|
           key, value = line.split("=")
           value = value.to_i if value =~ /\d+/
@@ -43,15 +54,19 @@ class Kasefet
     end
 
     def save
-      case File.extname(@file)
+      File.write(@file, format())
+    end
+
+    def format(file_path = @file)
+      case File.extname(file_path)
       when ".json"
         require 'json'
-        File.write(@file, @settings.to_json)
+        return @settings.to_json
       when ".yaml", ".yml"
         require 'yaml'
-        File.write(@file, @settings.to_yaml)
+        return @settings.to_yaml
       else
-        to_write = flatten_hash(@settings).map do |key, value|
+        return flatten_hash(@settings).map do |key, value|
           if value.is_a? Array
             value.map do |array_value|
               "#{key}=#{array_value}"
@@ -60,7 +75,6 @@ class Kasefet
             "#{key}=#{value}"
           end
         end.join("\n")
-        File.write(@file, to_write)
       end
     end
 

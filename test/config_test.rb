@@ -7,6 +7,7 @@ class ConfigTest < Minitest::Test
   def setup
     @tmpdir = Dir.mktmpdir
     @config = Kasefet::Config.new(@tmpdir + "global.json")
+    @config.load
   end
 
   def teardown
@@ -65,6 +66,7 @@ class ConfigTest < Minitest::Test
     @config.save
 
     other_config = Kasefet::Config.new(@config.file)
+    other_config.load
     assert_equal @config["foo"], other_config["foo"]
     assert_equal @config["bar.baz"], other_config["bar.baz"]
     assert_equal @config["array"], other_config["array"]

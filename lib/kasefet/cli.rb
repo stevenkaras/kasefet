@@ -30,6 +30,8 @@ class Kasefet
       config_file ||= GlobalConfigLocations.find { |file| File.exist?(File.expand_path(file)) }
       config_file ||= File.expand_path(GlobalConfigLocations.first)
       @config = Kasefet::Config.new(config_file)
+      @config.load
+      return @config
     end
 
     def load_wallet(options = {})
@@ -41,6 +43,7 @@ class Kasefet
       end.to_h
 
       @wallets = Kasefet::MultiWallet.new(wallets)
+      return @wallets
     end
 
     def determine_editor
