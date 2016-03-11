@@ -28,12 +28,12 @@ class Kasefet
 
     def [](key)
       value_file = file_for_key(key)
-      contents = read_value_file(value_file)
+      contents = read_file(value_file)
       _, value = read_value(contents)
       return value
     end
 
-    def read_value_file(file_path)
+    def read_file(file_path)
       return nil unless file_path
       return File.binread(file_path)
     end
@@ -50,10 +50,6 @@ class Kasefet
       return key_name, contents
     end
 
-    def format_value(key, value)
-      [MagicNumber, key.bytesize, key, value].pack("A4NA*A*")
-    end
-
     def []=(key, value)
       key_dir = dir_for_key(key)
       FileUtils.mkdir_p(key_dir)
@@ -61,7 +57,15 @@ class Kasefet
 
       value = format_value(key, value)
 
-      File.binwrite(key_dir + value_file_name, value)
+      write_file(key_dir + value_file_name, value)
+    end
+
+    def format_value(key, value)
+      [MagicNumber, key.bytesize, key, value].pack("A4NA*A*")
+    end
+
+    def write_file(path, contents)
+      File.binwrite(path, contents)
     end
 
     def file_for_key(key)

@@ -51,15 +51,14 @@ class Kasefet
       return value
     end
 
-    def read_value_file(file_path)
+    def read_file(file_path)
       encrypted_contents = super(file_path)
       return nil if encrypted_contents.nil?
       return decrypt_value(encrypted_contents, @cipher_key)
     end
 
-    def format_value(key, value)
-      value = super(key, value)
-      return encrypt_value(value, @cipher_key)
+    def write_file(path, contents)
+      return super(path, encrypt_value(contents, @cipher_key))
     end
   end
 end
