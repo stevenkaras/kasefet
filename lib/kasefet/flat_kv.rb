@@ -38,16 +38,16 @@ class Kasefet
       return File.binread(file_path)
     end
 
-    def read_value(contents)
-      return nil, nil unless contents
+    def read_value(file_contents)
+      return nil, nil unless file_contents
 
-      raise "FlatKV value file must be at least 8 bytes long" unless contents.bytesize >= 8
-      magic_number, key_size, contents = contents.unpack("A4NA*")
+      raise "FlatKV value file must be at least 8 bytes long" unless file_contents.bytesize >= 8
+      magic_number, key_size, file_contents = file_contents.unpack("A4NA*")
       raise "FlatKV value file must be a KSFT file" unless magic_number == MagicNumber
-      raise "FlatKV value file has been corrupted. Key length in header is longer than file" unless contents.bytesize >= key_size
-      key_name, contents = contents.unpack("A#{key_size}A*")
+      raise "FlatKV value file has been corrupted. Key length in header is longer than file" unless file_contents.bytesize >= key_size
+      key_name, file_contents = file_contents.unpack("A#{key_size}A*")
 
-      return key_name, contents
+      return key_name, file_contents
     end
 
     def []=(key, value)
