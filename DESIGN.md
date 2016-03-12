@@ -27,8 +27,10 @@ When encrypting files in such a format, I like to keep them prefixed to the encr
 The actual format of the value files is a binary file with the magic number "KSFT". The layout is simple:
 
 ```
-|Magic Number|Key Length (32 bit Big Endian unsigned integer)|Key|Value until EOF
-|KSFT|0x0006|foobar|bazquux....
++-------------------------------------------------------------------------------------------+
+| Magic Number | Key Length (32 bit big endian unsigned integer) | Key    | Value until EOF |
+| KSFT         | 0x0006                                          | foobar | bazquux....     |
++-------------------------------------------------------------------------------------------+
 ```
 
 # Kasefet Password Wallets
