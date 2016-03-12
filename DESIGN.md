@@ -4,6 +4,8 @@ We reuse this concept in several places, so here's the generic concept. I need t
 
 ```
 root
+|--index
+|  |--index
 |--db
    |--c39d7d6b239c2e20a31672ed979fed2b45c88748d06ba3be6bff85767b5d3d
       |--20160224.184012.laptop
@@ -33,6 +35,22 @@ The actual format of the value files is a binary file with the magic number "KSF
 +-------------------------------------------------------------------------------------------+
 ```
 
+## Index directory
+
+The index is a quick way to convert/iterate over all the keys in a KV store.
+
+There are two versions of the index file, which involve tradeoffs between change velocity and the likelihood of conflicts. The tradeoff is between storage size and expected velocity.
+
+## Low-velocity index
+
+This form is ideal for stores that don't change very often, as the index can be shared between all nodes, and generally doesn't need to be regenerated unless there's a conflict.
+
+The idea is that there is a single "index" file, which gets updated each time there's a new key added, and it's left to the sync program to leave a "conflicted copy" of the file, which indicates that the index should be rebuilt automatically.
+
+## High-velocity index
+
+This is the preferred form if you expect to have many concurrent changes. In this approach, each node maintains its own view of the index, and regenerates it pretty much every single chance it gets. The drawback is that changes are not automatically detected, and the extra storage, which can be non-trivial if there are a large number of keys.
+
 # Kasefet Password Wallets
 
 A kasefet wallet has the following layout:
@@ -40,8 +58,6 @@ A kasefet wallet has the following layout:
 ```
 wallet
 |--key
-|--index
-|  |--index
 |--metadata (flat file kv directory)
 |--ksft (flat file kv directory)
 ```
