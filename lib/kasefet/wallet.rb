@@ -27,22 +27,21 @@ class Kasefet
       @wallet_version = @wallet_version.to_i
       raise "Unknown Kasefet Wallet version: #{@wallet_version}" unless @wallet_version <= VERSION
 
-      @name_salt = @metadata["kasefet.name_salt"]
-      @credentials = Kasefet::EncryptedFlatKV.new(root: @root + CREDENTIALS_DIR, cipher_key: @master_key.key)
+      @credentials = Kasefet::EncryptedFlatKV.new(
+        root: @root + CREDENTIALS_DIR,
+        cipher_key: @master_key.key,
+        key_salt: @metadata["kasefet.name_salt"],
+      )
     end
 
     attr_accessor :root
 
-    def salted_keyname(name)
-      return "#{@name_salt}/#{name}/#{@name_salt}"
-    end
-
     def load(name)
-      return @credentials[salted_keyname(name)]
+      return @credentials[name]
     end
 
     def store(name, creds)
-      @credentials[salted_keyname(name)] = creds
+      @credentials[name] = creds
     end
   end
 end

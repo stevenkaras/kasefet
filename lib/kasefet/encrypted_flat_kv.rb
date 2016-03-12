@@ -8,13 +8,19 @@ class Kasefet
     CipherIVLength = 12
     CipherAuthTagLength = 16
 
-    def initialize(cipher_key:, **options)
+    def initialize(cipher_key:, key_salt: nil, **options)
       super(**options)
       @cipher = OpenSSL::Cipher.new("aes-256-gcm")
       @cipher_key = cipher_key
+      @key_salt = key_salt
     end
 
-    attr_accessor :cipher_key
+    attr_accessor :cipher_key, :key_salt
+
+    def key_to_digest(key)
+      key = "#{@key_salt}/#{key}/#{@key_salt}" if @key_salt
+      return super(key)
+    end
 
     def reencrypt_all_values!(new_key)
       old_key = @cipher_key

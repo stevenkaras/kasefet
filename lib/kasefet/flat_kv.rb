@@ -75,8 +75,12 @@ class Kasefet
       return files.last
     end
 
+    def key_to_digest(key)
+      OpenSSL::Digest::SHA256.hexdigest(key)
+    end
+
     def dir_for_key(key)
-      digest = OpenSSL::Digest::SHA256.hexdigest(key)
+      digest = key_to_digest(key)
       return @root + digest[0..1] + digest[2..-1]
     end
   end
